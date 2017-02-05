@@ -11,11 +11,12 @@ peaks <- get_peaks(bed, sort_peaks = FALSE)
 
 kmer_idx <- get_kmer_indices(peaks, genome = BSgenome.Mmusculus.UCSC.mm10, k = 5)
 
-# Convert to sparse Matrix
-sm <- sparseMatrix(i = length(peaks), j = length(kmer_idx), x = 1)
-lapply(1:length(kmer_idx), function(i){
-  sm[kmer_idx[[i]],i] <- 1
-})
-saveRDS(sm, "../output/kmerhits.idx.rds")
 
+sm2 <- reshape::melt.list(kmer_idx,  level=1)
+fac <- as.factor(sm2$L1)
+sm <- sparseMatrix(i = sm2$value, j = as.integer(fac), x = 1)
+sm2 <- sparseMatrix(summary(sm)$i, summary(sm)$j, x = 1)
+
+ixx <- SummarizedExperiment(assays = list(match = sm2), rowRanges = peaks,  colData = DataFrame(kmer = names(kmer_idx)))
+saveRDS(ixx, "../output/kmer.ixx.rds")
 
