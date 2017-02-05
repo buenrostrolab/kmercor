@@ -3,6 +3,7 @@
 .Rapp.history
 
 output/kmer.ixx.rds
+output/kmer.mm9.ixx.rds
 
 # Session Data files
 .RData

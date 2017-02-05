@@ -1,0 +1,31 @@
+---
+title: "kmerCorrelation_MAC_DC"
+output: html_document
+---
+
+```{r libraries, echo = FALSE, warning = FALSE, message = FALSE}
+library(plotly)
+library(heatmaply)
+library(SummarizedExperiment)
+```
+
+
+## DC samples
+
+```{r dc, fig.width=7, fig.height=7, message = FALSE, warning = FALSE, echo=FALSE, cache = TRUE}
+immgen <- assays(readRDS("../output/immgenDeviations.rds"),"z")[[1]]
+zh <- assays(readRDS("../output/DC_Deviations.rds"),"z")[[1]]
+zh <- zh[,colSums(is.na(zh)) < 10]
+corout <- cor(zh, immgen, use = "pairwise.complete.obs")
+heatmaply(t(corout), scale_fill_gradient_fun = ggplot2::scale_fill_gradient2(low = "blue", high = "red"))
+```
+
+## MAC samples
+
+```{r mac, fig.width=7, fig.height=7, message = FALSE, warning = FALSE, echo=FALSE, cache = TRUE}
+immgen <- assays(readRDS("../output/immgenDeviations.rds"),"z")[[1]]
+zh <- assays(readRDS("../output/MAC_Deviations.rds"),"z")[[1]]
+zh <- zh[,colSums(is.na(zh)) < 10]
+corout <- cor(zh, immgen, use = "pairwise.complete.obs")
+heatmaply(t(corout), scale_fill_gradient_fun = ggplot2::scale_fill_gradient2(low = "blue", high = "red"))
+```
