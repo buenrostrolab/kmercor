@@ -1,0 +1,12 @@
+base
+ggplot2
+plotly
+viridis
+heatmaply
+BiocGenerics
+S4Vectors
+IRanges
+GenomeInfoDb
+GenomicRanges
+Biobase
+SummarizedExperiment

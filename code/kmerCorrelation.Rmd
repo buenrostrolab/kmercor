@@ -1,0 +1,50 @@
+---
+title: "ImmGen-scATAC Correlation"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r libraries, echo = FALSE, warning = FALSE, message = FALSE}
+library(plotly)
+library(heatmaply)
+library(SummarizedExperiment)
+```
+
+# About
+Using the kmer deviation score computation through chromVAR, I computed the scores for 512 k=5 mers 
+and scored each of the ImmGen ATAC samples in addition to each of the single cells. 
+
+There are two merged bam files that Marcin pointed me to on the Broad server, which are shown here. 
+There may be additional samples on the Stanford server that I can add if this isn't sufficient. 
+
+## ImmGen/ImmGen
+
+```{r immgen, fig.width=7, fig.height=7, message = FALSE, warning = FALSE, echo=FALSE, cache = TRUE}
+immgen <- assays(readRDS("../output/immgenDeviations.rds"),"z")[[1]]
+corout <- cor(immgen, immgen, use = "pairwise.complete.obs")
+heatmaply(t(corout), scale_fill_gradient_fun = ggplot2::scale_fill_gradient2(low = "blue", high = "red"))
+```
+
+## 0 Hour Samples
+**Note: only 77,611 of the 512,595 peaks in ImmGen were non-zero for these 413 samples**
+
+```{r zh, fig.width=7, fig.height=7, message = FALSE, warning = FALSE, echo=FALSE, cache = TRUE}
+immgen <- assays(readRDS("../output/immgenDeviations.rds"),"z")[[1]]
+zh <- assays(readRDS("../output/0hr_LPS_Deviations.rds"),"z")[[1]]
+zh <- zh[,colSums(is.na(zh)) < 10]
+corout <- cor(zh, immgen, use = "pairwise.complete.obs")
+heatmaply(t(corout), scale_fill_gradient_fun = ggplot2::scale_fill_gradient2(low = "blue", high = "red"))
+```
+
+## Other samples
+**Note: only 137,316 of the 512,595 peaks in ImmGen were non-zero for these 451 samples**
+
+```{r other, fig.width=7, fig.height=7, message = FALSE, warning = FALSE, echo=FALSE, cache = TRUE}
+immgen <- assays(readRDS("../output/immgenDeviations.rds"),"z")[[1]]
+zh <- assays(readRDS("../output/other_LPS_Deviations.rds"),"z")[[1]]
+zh <- zh[,colSums(is.na(zh)) < 10]
+corout <- cor(zh, immgen, use = "pairwise.complete.obs")
+heatmaply(t(corout), scale_fill_gradient_fun = ggplot2::scale_fill_gradient2(low = "blue", high = "red"))
+```
